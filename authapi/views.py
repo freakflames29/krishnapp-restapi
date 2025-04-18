@@ -6,7 +6,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth.models import User
 from django.db import IntegrityError, Error
-
+from django.contrib.auth import authenticate
 
 from .serializers import UserSerializer
 
@@ -31,10 +31,8 @@ class UserView(APIView):
             }
             return Response(resData, status=201)
 
-
         except IntegrityError as e:
             return Response({"error": "Username already exists"}, status=401)
-
 
         except Exception as e:
             print("Error is ", e)
@@ -42,12 +40,23 @@ class UserView(APIView):
 
 
 class LoginView(APIView):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
-    def get(self, rq):
-        user = rq.user
-        userser = UserSerializer(user)
+    def post(self, rq):
+        username = rq.data['username']
+        password = rq.data["password"]
 
-        return Response(userser.data, status=200)
+        user = authenticate(rq, username=username, password=password)
 
+        if user:
+            token = Token.objects.get_or_create(user=user)
+            print(token)
+            data = {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "token": token[0].key
+            }
+
+            return Response(data, status=200)
+        else:
+            return Response({"msg":"username / password incorrect"}, status=400)
