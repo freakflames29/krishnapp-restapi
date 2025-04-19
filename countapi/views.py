@@ -7,17 +7,25 @@ from django.core.exceptions import ObjectDoesNotExist
 from .serializers import CountSerializer
 from .models import Count
 from rest_framework.generics import get_object_or_404
+from rest_framework import filters
 
 
 class CountView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
+    filter_backends = [filters.SearchFilter]
+    search_fields =["date"]
 
     def get(self, rq):
         try:
             user = rq.user
             print(user)
             count = Count.objects.filter(user=user)
+            
+            
+            for backend in list(self.filter_backends):
+                count = backend().filter_queryset(rq, count, self)
+                
             count_ser = CountSerializer(count, many=True)
             return Response(count_ser.data, status=200)
 
