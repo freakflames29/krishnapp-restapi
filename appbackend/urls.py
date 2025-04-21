@@ -11,4 +11,5 @@ urlpatterns = [
     path("auth/", include("authapi.urls")),
     path("health/", views.HealthCheck.as_view()),
     path("test/", include("testapi.urls")),
+    path("posts/", include("postapi.urls")),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
