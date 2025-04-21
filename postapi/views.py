@@ -3,6 +3,7 @@ from rest_framework import generics
 from rest_framework import mixins
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.models import User
 
 from .serializers import PostSerializer
 from .models import Post
@@ -24,5 +25,22 @@ class CreatePostView(mixins.CreateModelMixin,generics.GenericAPIView):
         return self.create(rq)
     
 
+
+
+class SinglePostView(generics.RetrieveAPIView):
+    serializer_class = PostSerializer
+    queryset = Post.objects.all()
+
+# user's post view 
+class UserPostView(generics.ListAPIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
     
+    serializer_class = PostSerializer
+    # queryset = request.user.posts.all()
     
+    def get_queryset(self):
+        return Post.objects.filter(user=self.request.user)
+    
+
+            
