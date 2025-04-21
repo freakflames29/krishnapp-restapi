@@ -8,11 +8,29 @@ from .serializers import CountSerializer
 from .models import Count
 from rest_framework.generics import get_object_or_404
 from rest_framework import filters
+from rest_framework.authentication import TokenAuthentication
 
+
+
+
+class CustomHeaderTokenAuthentication(TokenAuthentication):
+    keyword = 'Token'
+
+    def authenticate(self, request):
+        # Try to get the token from X-Authorization
+        x_auth = request.headers.get('X-Authorization')
+
+        if x_auth and x_auth.startswith(self.keyword):
+            # Replace 'Authorization' with the X-Authorization value temporarily
+            request.META['HTTP_AUTHORIZATION'] = x_auth
+
+        # Call the original TokenAuthentication logic
+        return super().authenticate(request)
+    
 
 class CountView(APIView):
     permission_classes = [IsAuthenticated]
-    authentication_classes = [TokenAuthentication]
+    authentication_classes = [TokenAuthentication,CustomHeaderTokenAuthentication]
     filter_backends = [filters.SearchFilter]
     search_fields =["date"]
 

@@ -4,5 +4,5 @@ from .models import  Count
 class CountSerializer(ModelSerializer):
     class Meta:
         model = Count
-        fields =["id","count","date"]
+        fields =["id","count","date","time"]
 
