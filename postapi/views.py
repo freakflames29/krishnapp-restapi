@@ -10,7 +10,7 @@ from .models import Post
 
 class AllPostView(generics.ListAPIView):
     serializer_class = PostSerializer
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().order_by("-id")
 
 class CreatePostView(mixins.CreateModelMixin,generics.GenericAPIView):
     serializer_class = PostSerializer

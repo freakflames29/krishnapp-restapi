@@ -7,4 +7,4 @@ class PostSerializer(ModelSerializer):
     user = UserSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ["id","title","desc","image","user"]
+        fields = ["id","title","desc","image","user","created_at"]
