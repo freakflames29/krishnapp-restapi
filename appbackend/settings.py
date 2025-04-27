@@ -64,7 +64,8 @@ INSTALLED_APPS = [
     'countapi',
     'authapi',
     'testapi',
-    'postapi'
+    'postapi',
+    'wisdom'
 ]
 
 MIDDLEWARE = [

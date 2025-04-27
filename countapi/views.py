@@ -38,7 +38,7 @@ class CountView(APIView):
         try:
             user = rq.user
             print(user)
-            count = Count.objects.filter(user=user)
+            count = Count.objects.filter(user=user).order_by("-id")
             
             
             for backend in list(self.filter_backends):

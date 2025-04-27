@@ -40,7 +40,7 @@ class UserPostView(generics.ListAPIView):
     # queryset = request.user.posts.all()
     
     def get_queryset(self):
-        return Post.objects.filter(user=self.request.user)
+        return Post.objects.filter(user=self.request.user).order_by("-id")
     
 
             
